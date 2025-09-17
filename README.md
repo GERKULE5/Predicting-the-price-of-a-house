@@ -18,4 +18,4 @@ docker build -t rent-predictor .
 docker run -p 8000:8000 rent-predictor
 ```
 
-# 4. Сервис доступен на <http://localhost:8000/docs>
+### 4. Сервис доступен на <http://localhost:8000/docs>
