@@ -1,14 +1,12 @@
 import pandas as pd
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
-import os
-from repair_dict import repairLevelIndex
 
 
 
 class Prediction: 
-
     def readData(self, path: str):
         try:
             data = pd.read_csv(path)
@@ -54,39 +52,19 @@ class Prediction:
         print(f'Coef: {model.coef_}')
         print(f'Intercept: {model.intercept_}')
     
-    def predicting(self, new_flat: list, model):
-        inputData = pd.DataFrame([[new_flat[0], new_flat[1], repairLevelIndex[new_flat[2]]]], columns=['s', 'roomsCount', 'Repair'])
-        predictedPrice = model.predict(inputData)
-
-        print(f'Predicted price: {predictedPrice[0]}')
-
 
 def main():
     pred = Prediction()
 
-    data = pred.readData('src/dataset.csv')
+    data = pred.readData('src/data/dataset.csv')
     if data is not None:
         x,y = pred.prepareData(data)
         model, x_test, y_test = pred.trainModel(x,y)
         pred.testingModel(model, x_test, y_test)
 
-    new_flat = []
-    s = float(input('Area: '))
-    roomsCount = int(input('Count of rooms(If its studio = 1): '))
-    repairLevel = str(input('Repair level(Designed/Euro/Cosmetic): '))
-
-    if repairLevel.strip() not in ['Designed','Euro', 'Cosmetic']:
-        print('Unknown repair')
-        return
-
-    new_flat.append(s)
-    new_flat.append(roomsCount)
-    new_flat.append(repairLevel)
-
-    pred.predicting(new_flat, model)
+        joblib.dump(model, "src/models/model.pkl")
 
 
-    
 if __name__ == "__main__":
     main()
 
